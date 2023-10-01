@@ -33,25 +33,79 @@ function oldScrabbleScorer(word) {
 // don't change the names or your program won't work as expected. //
 
 function initialPrompt() {
-   console.log("Let's play some scrabble! Enter a word:");
+   console.log("Let's play some Scrabble!")
+   let userWord = input.question('Please enter a word to score: ');
+   // console.log(oldScrabbleScorer(userWord))
+   return userWord
+}; 
+
+
+let simpleScorer = function (word) {
+   let totalPoints = word.length;
+   return totalPoints
 };
 
-let simpleScorer;
+let vowelBonusScorer = function (word) {
+   let wordLowercase = word.toUpperCase(); 
+   let vowels = ['A', 'E', 'I', 'O', 'U']; 
+   let wordArray = wordLowercase.split(''); 
+   let totalPointsVowels = 0
+   for (i = 0; i < wordArray.length; i++) {
+      if (vowels.includes(wordArray[i])) {
+         totalPointsVowels += 3
+      } else {
+         totalPointsVowels += 1
+      }
+   } return totalPointsVowels
+};
 
-let vowelBonusScorer;
+let scrabbleScorer = function (word) {
+   
+};
 
-let scrabbleScorer;
+let scoringAlgoSimple = {
+   name: 'Simple Score',
+   Description: 'Each letter is worth 1 point.', 
+   scoringFunction: simpleScorer
+};
 
-const scoringAlgorithms = [];
+let scoringAlgoBonus = {
+   name: 'Bonus Vowels',
+   Description: 'Vowels are 3 pts, consonants are 1 pt.',
+   scoringFunction: vowelBonusScorer
+};
 
-function scorerPrompt() {}
+let scoringAlgoScrabble = {
+   name: 'Scrabble',
+   Description: 'The traditional scoring algorithm.',
+   scoringFunction: scrabbleScorer
+};
+
+const scoringAlgorithms = [scoringAlgoSimple, scoringAlgoBonus, scoringAlgoScrabble];
+
+function scorerPrompt() {
+   console.log("0 - Simple: One point per character\n1 - Vowel Bonus: Vowels are worth 3 points\n2 - Scrabble: Uses scrabble point system")
+   let userChoise = Number(input.question('Please enter the scoring algorithm you would like to use (0,1,2): '))
+   if (userChoise === 0) {
+      return scoringAlgoSimple
+   } else if (userChoise === 1) {
+      return scoringAlgoBonus
+   } else {
+      return scoringAlgoScrabble
+   }
+}
+
+
 
 function transform() {};
 
 let newPointStructure;
 
 function runProgram() {
-   initialPrompt();
+   let userWord = initialPrompt();
+   let algo = scorerPrompt();
+   let score = algo.scoringFunction(userWord);
+   console.log(`Score for ${userWord} is ${score}`)
    
 }
 
