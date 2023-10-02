@@ -46,9 +46,9 @@ let simpleScorer = function (word) {
 };
 
 let vowelBonusScorer = function (word) {
-   let wordLowercase = word.toUpperCase(); 
+   let wordUpperCase = word.toUpperCase(); 
    let vowels = ['A', 'E', 'I', 'O', 'U']; 
-   let wordArray = wordLowercase.split(''); 
+   let wordArray = wordUpperCase.split(''); 
    let totalPointsVowels = 0
    for (i = 0; i < wordArray.length; i++) {
       if (vowels.includes(wordArray[i])) {
@@ -60,25 +60,33 @@ let vowelBonusScorer = function (word) {
 };
 
 let scrabbleScorer = function (word) {
-   
+   let wordUpperCase = word.toUpperCase();
+   let totalPointsScrabble = 0; 
+   for (i = 0; i < wordUpperCase.length; i++) { 
+      for (item in newPointStructure) {
+         if (item.includes(wordUpperCase[i]))
+            totalPointsScrabble += newPointStructure[item]
+      };
+   };
+   return totalPointsScrabble
 };
 
 let scoringAlgoSimple = {
    name: 'Simple Score',
    Description: 'Each letter is worth 1 point.', 
-   scoringFunction: simpleScorer
+   "scorerFunction": simpleScorer
 };
 
 let scoringAlgoBonus = {
    name: 'Bonus Vowels',
    Description: 'Vowels are 3 pts, consonants are 1 pt.',
-   scoringFunction: vowelBonusScorer
+   "scorerFunction": vowelBonusScorer
 };
 
 let scoringAlgoScrabble = {
    name: 'Scrabble',
    Description: 'The traditional scoring algorithm.',
-   scoringFunction: scrabbleScorer
+   "scorerFunction": scrabbleScorer
 };
 
 const scoringAlgorithms = [scoringAlgoSimple, scoringAlgoBonus, scoringAlgoScrabble];
@@ -97,9 +105,18 @@ function scorerPrompt() {
 
 
 
-function transform() {};
+function transform(oldPointObject) {
+   let newPointObject = {};
+   for (item in oldPointObject) {
+      let pointsForLetter = Number(item); 
+      let letter = oldPointObject[item]; 
+      newPointObject[letter] = pointsForLetter;
+   } 
+   return newPointObject
+};
 
-let newPointStructure;
+let newPointStructure = transform(oldPointStructure);
+
 
 function runProgram() {
    let userWord = initialPrompt();
