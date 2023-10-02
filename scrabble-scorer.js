@@ -34,16 +34,32 @@ function oldScrabbleScorer(word) {
 
 function initialPrompt() {
    console.log("Let's play some Scrabble!")
-   let userWord = input.question('Please enter a word to score: ');
+   let alphabet = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',' ']
+   let userWordInput = input.question('Please enter a word to score: ');
+   let userWordInput2 = userWordInput.toLowerCase();
+   for (i = 0; i < userWordInput2.length; i++){
+      while (!alphabet.includes(userWordInput2[i])) {
+         console.log("Error. Invalid Character")
+         userWordInput = input.question('Please enter a word to score: ');
+         userWordInput2 = userWordInput.toLowerCase();
+      }
+   }
    // console.log(oldScrabbleScorer(userWord))
-   return userWord
+   return userWordInput
 };
 
 
 let simpleScorer = function (word) {
-   let totalPoints = word.length;
+   let totalPoints = 0;
+   for (i = 0; i < word.length; i++) {
+      if (word[i] === ' ') {
+         totalPoints += 0;
+      } else {
+         totalPoints += 1;
+      }
+   };
    return totalPoints
-};
+}
 
 let vowelBonusScorer = function (word) {
    let wordUpperCase = word.toUpperCase();
@@ -53,11 +69,15 @@ let vowelBonusScorer = function (word) {
    for (i = 0; i < wordArray.length; i++) {
       if (vowels.includes(wordArray[i])) {
          totalPointsVowels += 3
-      } else {
+      } else if (wordArray[i] === ' ') {
+         totalPointsVowels += 0;
+      }else {
          totalPointsVowels += 1
       }
-   } return totalPointsVowels
-};
+   }
+   return totalPointsVowels
+   } 
+
 
 let scrabbleScorer = function (word) {
    let wordUpperCase = word.toLowerCase();
@@ -94,6 +114,11 @@ const scoringAlgorithms = [scoringAlgoSimple, scoringAlgoBonus, scoringAlgoScrab
 function scorerPrompt() {
    console.log("0 - Simple: One point per character\n1 - Vowel Bonus: Vowels are worth 3 points\n2 - Scrabble: Uses scrabble point system")
    let userChoise = Number(input.question('Please enter the scoring algorithm you would like to use (0,1,2): '))
+   let validAnswers = [0, 1, 2]
+   while (!validAnswers.includes(userChoise)) {
+      console.log("Error: Select 0, 1, or 2")
+      userChoise = Number(input.question('Please enter the scoring algorithm you would like to use (0,1,2): '))
+   }
    if (userChoise === 0) {
       return scoringAlgoSimple
    } else if (userChoise === 1) {
@@ -113,12 +138,13 @@ function transform(oldPointObject) {
       for (i = 0; i < letterArray.length; i++) {
          letter = letterArray[i].toLowerCase()
          newPointObject[letter] = Number(pointsForLetter)
-      }
+      };
    }
    return newPointObject
 };
 
 let newPointStructure = transform(oldPointStructure);
+newPointStructure[' '] = Number(0)
 
 
 function runProgram() {
@@ -143,4 +169,3 @@ module.exports = {
    runProgram: runProgram,
    scorerPrompt: scorerPrompt
 };
-
